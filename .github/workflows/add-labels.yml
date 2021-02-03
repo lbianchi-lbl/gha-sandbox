@@ -13,6 +13,7 @@ jobs:
         with:
           script: |
             for pr in api.pulls.list():
-                with _log.group(pr.title):
+                title = f'PR#{pr.number} - {pr.title}'
+                with _log.group(title):
                     print(pr)
 
