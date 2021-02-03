@@ -70,7 +70,7 @@ class PullReviews:
     def latest_by_user(self):
         by_user = {}
         for review in self:
-            if state not in ReviewState.affecting_approval:
+            if review.state not in ReviewState.affecting_approval:
                 continue
             by_user[review.user.login] = review
 
