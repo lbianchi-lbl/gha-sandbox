@@ -22,7 +22,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.PYACTIONS_TOKEN }}
         with:
           script: |
-            trigger = LabelAddTrigger("CI:test")
+            trigger = LabelAddTrigger("CI:another-test")
             for pr in api.pulls.list():
                 trigger.emit(api, target=pr, reset_now=False)
 
