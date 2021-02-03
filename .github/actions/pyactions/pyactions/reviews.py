@@ -8,11 +8,6 @@ from .actions import Logger
 _log = Logger()
 
 
-def _iter_from_pagination(oper, *args, **kwargs):
-    for page in paged(oper, *args, **kwargs):
-        yield from page
-
-
 class ReviewState:
     approved = 'APPROVED'
     dismissed = 'DISMISSED'
@@ -25,15 +20,23 @@ class ReviewState:
     }
 
 
+def get_reviews(api, pr=None):
+    params = dict(pull_number=pr.number) if pr is not None else {}
+    for page_idx, page in enumerate(paged(api.pulls.list_reviews, **params)):
+        _log.info(f'Fetching reviews: {page_idx=}, {len(page)=}')
+        for review_in_page_idx, review in enumerate(page):
+            _log.display(f'Review {review_in_page_idx}', review)
+            yield review
+
+
 class PullReviews:
     "Overall status of reviews for a PR."
 
     @classmethod
     def fetch(cls, api, pr=None, protected_branch_name='main'):
 
-        params = dict(pull_number=pr.number) if pr is not None else {}
         _log.info(f'Fetching reviews ({params=})')
-        reviews = list(_iter_from_pagination(api.pulls.list_reviews, **params))
+        reviews = list(get_reviews(api, pr=pr))
         _log.info(f'Fetching branch protection rules ({protected_branch_name=})')
         branch_protection = api.repos.get_branch_protection(branch=protected_branch_name)
 

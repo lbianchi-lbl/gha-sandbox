@@ -30,3 +30,4 @@ jobs:
             _log.display("pr", pr)
             reviews = PullReviews.fetch(api, pr=pr)
             _log.display("reviews.latest_by_user", reviews.latest_by_user)
+            _log.display(f'{reviews.is_status_approved}')
