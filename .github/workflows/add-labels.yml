@@ -25,6 +25,6 @@ jobs:
             trigger = LabelAddTrigger("CI:run")
             for pr in api.pulls.list():
                 _log.display(f'PR #{pr.number}', pr)
-                trigger.emit(api, target=pr, reset_now=True)
+                trigger.emit(api, target=pr, reset_now=False)
 
 
