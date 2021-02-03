@@ -4,13 +4,14 @@ on:
   workflow_run:
     workflows: [Integration]
     types: [completed]
-    branches-ignore:
-      - main
+    # branches-ignore:
+    #   - main
 
 jobs:
   reset_triggers:
     name: Display event info
     runs-on: ubuntu-latest
+    if: github.event.workflow_run.pull_requests != []
     steps:
       - uses: actions/checkout@v2
       - uses: ./.github/actions/pyactions
@@ -22,7 +23,6 @@ jobs:
             _log.display("context_github", context_github)
       - uses: ./.github/actions/pyactions
         name: Reset trigger
-        # if: github.event.workflow_run.pull_requests != []
         env:
           CONTEXT_GITHUB: ${{ toJSON(github) }}
           GITHUB_TOKEN: ${{ secrets.PYACTIONS_TOKEN }}
