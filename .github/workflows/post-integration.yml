@@ -4,8 +4,8 @@ on:
   workflow_run:
     workflows: [Integration]
     types: [completed]
-    # branches-ignore:
-    #   - main
+    branches-ignore:
+      - main
 
 jobs:
   reset_triggers:
@@ -25,6 +25,7 @@ jobs:
         # if: github.event.workflow_run.pull_requests != []
         env:
           CONTEXT_GITHUB: ${{ toJSON(github) }}
+          GITHUB_TOKEN: ${{ secrets.PYACTIONS_TOKEN }}
         with:
           script: |
             _log.display("context_github", context_github)
