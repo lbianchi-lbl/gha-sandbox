@@ -18,3 +18,14 @@ jobs:
           script: |
             _log.display("github", github)
             _log.display("github.event", github.event)
+      - uses: ./.github/actions/pyactions
+        name: Analyze reviews
+        env:
+          CONTEXT_GITHUB: ${{ toJSON(github) }}
+        with:
+          script: |
+            from .reviews import PullReviews
+            pr = github.event.pull_request
+            _log.display("pr", pr)
+            reviews = PullReviews.fetch(api, pr=pr)
+            _log.display("reviews.latest_by_user", reviews.latest_by_user)
