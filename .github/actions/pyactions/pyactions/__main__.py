@@ -8,7 +8,7 @@ from ghapi.actions import context_github
 from .actions import get_api
 from .models import GitHubContext
 from .util import LabelAddTrigger
-from .logging_ import get_logger()
+from .logging_ import get_logger
 
 
 log = get_logger()
