@@ -31,26 +31,24 @@ class LabelAddTrigger(Trigger):
     def __init__(self, label_name):
         self.label_name = label_name
 
-    def _get_api_call_params(self, target=None):
-        params = {
-            'name': self.label_name,
-        }
+    def _unset_label(self, api, target=None):
+        params = dict(name=self.label_name)
         if target:
-            params['issue_number'] = target.number
-        return params
+            params.update(issue_number=target.number)
 
-    def _unset_label(self, api, **kwargs):
-        params = self._get_api_call_params(**kwargs)
         try:
             api.issues.remove_label(**params)
         # TODO figure out the most precise error that is raised when the label cannot be removed because it doesn't exist
         except Exception as e:
             _log.exception(e)
 
-    def _set_label(self, api, **kwargs):
-        params = self._get_api_call_params(**kwargs)
+    def _set_label(self, api, target=None):
+        params = dict(labels=[self.label_name])
+        if target:
+            params.update(issue_number=target.number)
+
         try:
-            api.issues.add_label(**params)
+            api.issues.add_labels(**params)
         except Exception as e:
             _log.exception(e)
 

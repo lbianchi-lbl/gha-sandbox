@@ -18,6 +18,8 @@ jobs:
                     print(pr)
       - uses: ./.github/actions/pyactions
         name: Trigger test workflow on PRs
+        env:
+          GITHUB_TOKEN: ${{ secrets.PYACTIONS_TOKEN }}
         with:
           script: |
             trigger = LabelAddTrigger("CI:test")

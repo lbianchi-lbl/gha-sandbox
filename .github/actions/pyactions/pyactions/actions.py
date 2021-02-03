@@ -34,6 +34,7 @@ class Logger:
     def exception(self, e):
         with self.group(str(e)):
             self.info(e)
+            self.info(f'{type(e)=}')
 
     def display(self, title, obj):
         with self.group(title):
