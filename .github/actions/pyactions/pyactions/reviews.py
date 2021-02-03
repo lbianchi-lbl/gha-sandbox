@@ -2,10 +2,10 @@ import itertools
 
 from ghapi.page import paged
 
-from .actions import Logger
+from .logging_ import get_logger
 
 
-_log = Logger()
+_log = get_logger()
 
 
 class ReviewState:
@@ -25,7 +25,7 @@ def get_reviews(api, pr=None):
     for page_idx, page in enumerate(paged(api.pulls.list_reviews, **params)):
         _log.info(f'Fetching reviews: {page_idx=}, {len(page)=}')
         for review_in_page_idx, review in enumerate(page):
-            _log.display(f'Review {review_in_page_idx}', review)
+            _log.display(review, f'Review {review_in_page_idx}')
             yield review
 
 

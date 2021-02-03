@@ -5,13 +5,13 @@ import sys
 from ghapi.all import GhApi
 from ghapi.actions import context_github
 
-from .actions import Logger, get_api
+from .actions import get_api
 from .models import GitHubContext
 from .util import LabelAddTrigger
+from .logging_ import get_logger()
 
 
-_log = Logger()
-
+log = get_logger()
 
 # TODO use owner, repo and token from GitHub Actions runner env
 api = get_api()
@@ -26,14 +26,14 @@ try:
     _script = sys.argv[1]
 except IndexError:
     _script = 'print(api)'
-_log.display("Script", _script)
+log.display(script=_script)
 try:
-    _log.info('exec()ing script...')
+    log.info('exec()ing script...')
     exec(_script)
 except Exception as e:
-    _log.critical('Could not execute script:')
-    _log.exception(e)
-    _log.display("Script", _script)
+    log.critical('Could not execute script:')
+    log.exception(e)
+    log.display(script=_script)
     sys.exit(1)
 else:
-    _log.info('Done')
+    log.info('Done')

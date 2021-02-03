@@ -16,8 +16,8 @@ jobs:
           CONTEXT_GITHUB: ${{ toJSON(github) }}
         with:
           script: |
-            _log.display("github", github)
-            _log.display("github.event", github.event)
+            log.display(github=github)
+            log.display(github__event=github.event)
       - uses: ./.github/actions/pyactions
         name: Analyze reviews
         env:
@@ -27,7 +27,7 @@ jobs:
           script: |
             from .reviews import PullReviews
             pr = github.event.pull_request
-            _log.display("pr", pr)
+            log.display(pr=pr)
             reviews = PullReviews.fetch(api, pr=pr)
-            _log.display("reviews.latest_by_user", reviews.latest_by_user)
-            _log.display(f'{reviews.is_status_approved}', reviews.is_status_approved)
+            log.display(reviews.latest_by_user, "reviews.latest_by_user")
+            log.info(f'{reviews.is_status_approved=}')

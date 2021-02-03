@@ -20,7 +20,8 @@ jobs:
           CONTEXT_GITHUB: ${{ toJSON(github) }}
         with:
           script: |
-            _log.display("context_github", context_github)
+            log.display(github=github)
+            log.display(github__event=github.event)
       - uses: ./.github/actions/pyactions
         name: Reset trigger
         env:
@@ -28,9 +29,9 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.PYACTIONS_TOKEN }}
         with:
           script: |
-            _log.display("context_github", context_github)
+            log.display(context_github=context_github)
             prs = context_github.event.workflow_run.pull_requests
             trigger = LabelAddTrigger("CI:run")
             for pr in prs:
-                _log.display(f'PR #{pr.number}', pr)
+                log.display(pr=pr) 
                 trigger.reset(api, target=pr)

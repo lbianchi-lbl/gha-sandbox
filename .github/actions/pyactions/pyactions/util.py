@@ -1,9 +1,9 @@
 from ghapi.all import GhApi
 
-from .actions import Logger
+from .logging_ import get_logger
 
 
-_log = Logger()
+_log = get_logger()
 
 
 class CILabels:

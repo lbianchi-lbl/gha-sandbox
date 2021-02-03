@@ -13,9 +13,7 @@ jobs:
         with:
           script: |
             for pr in api.pulls.list():
-                title = f'PR#{pr.number} - {pr.title}'
-                with _log.group(title):
-                    print(pr)
+                log.display(pr=pr)
       - uses: ./.github/actions/pyactions
         name: Trigger test workflow on PRs
         env:
@@ -24,7 +22,7 @@ jobs:
           script: |
             trigger = LabelAddTrigger("CI:run")
             for pr in api.pulls.list():
-                _log.display(f'PR #{pr.number}', pr)
+                log.display(pr=pr)
                 trigger.emit(api, target=pr, reset_now=False)
 
 
