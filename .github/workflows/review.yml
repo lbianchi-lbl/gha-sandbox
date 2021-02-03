@@ -1,0 +1,20 @@
+name: PR Review
+
+on:
+  pull_request_review:
+    types: [submitted]
+
+
+jobs:
+  check-approval:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: ./.github/actions/pyactions
+        name: Display event
+        env:
+          CONTEXT_GITHUB: ${{ toJSON(github) }}
+        with:
+          script: |
+            _log.display("github", github)
+            _log.display("github.event", github.event)
