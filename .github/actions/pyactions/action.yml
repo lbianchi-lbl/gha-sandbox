@@ -1,0 +1,12 @@
+name: pyactions
+description: Interact with the GitHub API with Python
+inputs:
+  script:
+    description: The body of the script to execute
+    required: true
+    default: print(github.repository)
+runs:
+  using: docker
+  image: Dockerfile
+  args:
+    - ${{ inputs.script }}
