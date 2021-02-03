@@ -37,10 +37,14 @@ class LabelAddTrigger(Trigger):
             params.update(issue_number=target.number)
 
         try:
+            _log.info(f'Trying to remove label: {self.label_name}')
             api.issues.remove_label(**params)
         # TODO figure out the most precise error that is raised when the label cannot be removed because it doesn't exist
         except Exception as e:
+            _log.warning(f'Could not remove label. This might be because the label was now present on the target.')
             _log.exception(e)
+        else:
+            _log.info('Label removed successfully')
 
     def _set_label(self, api, target=None):
         params = dict(labels=[self.label_name])
@@ -48,9 +52,13 @@ class LabelAddTrigger(Trigger):
             params.update(issue_number=target.number)
 
         try:
+            _log.info(f'Trying to add label: {self.label_name}')
             api.issues.add_labels(**params)
         except Exception as e:
+            _log.warning(f'Could not add label')
             _log.exception(e)
+        else:
+            _log.info('Label added successfully')
 
     def emit(self, api, target=None, reset_now=True):
 
