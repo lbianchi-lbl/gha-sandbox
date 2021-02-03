@@ -35,7 +35,7 @@ class PullReviews:
     @classmethod
     def fetch(cls, api, pr=None, protected_branch_name='main'):
 
-        _log.info(f'Fetching reviews ({params=})')
+        _log.info(f'Fetching reviews')
         reviews = list(get_reviews(api, pr=pr))
         _log.info(f'Fetching branch protection rules ({protected_branch_name=})')
         branch_protection = api.repos.get_branch_protection(branch=protected_branch_name)
