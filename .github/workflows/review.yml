@@ -22,6 +22,7 @@ jobs:
         name: Analyze reviews
         env:
           CONTEXT_GITHUB: ${{ toJSON(github) }}
+          GITHUB_TOKEN: ${{ secrets.PYACTIONS_TOKEN }}  # needed to access the branch protection
         with:
           script: |
             from .reviews import PullReviews
