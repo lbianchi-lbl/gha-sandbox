@@ -1,5 +1,10 @@
 from ghapi.all import GhApi
 
+from .actions import Logger
+
+
+_log = Logger()
+
 
 class CILabels:
     run_integration = 'CI:run-integration'
@@ -40,14 +45,14 @@ class LabelAddTrigger(Trigger):
             api.issues.remove_label(**params)
         # TODO figure out the most precise error that is raised when the label cannot be removed because it doesn't exist
         except Exception as e:
-            pass
+            _log.exception(e)
 
     def _set_label(self, api, **kwargs):
         params = self._get_api_call_params(**kwargs)
         try:
             api.issues.add_label(**params)
         except Exception as e:
-            pass
+            _log.exception(e)
 
     def emit(self, api, target=None, reset_now=True):
 
