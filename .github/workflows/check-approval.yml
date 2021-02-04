@@ -38,7 +38,7 @@ jobs:
           script: |
             from .reviews import PullReviews
 
-            reviewable_prs = api.pulls.list()
+            prs_to_check = reviewable_prs = api.pulls.list()
 
             if github.event_name == 'workflow_run':
                 review_event_sha = github.event.workflow_run.head_commit.id
@@ -49,8 +49,6 @@ jobs:
                 ]
                 log.info(f'{len(prs_matching_review_event)=}')
                 prs_to_check = prs_matching_review_event
-            else:
-                prs_to_check = reviewable_prs
 
             for pr in prs_to_check:
                 log.display(pr=pr)
