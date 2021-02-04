@@ -4,8 +4,8 @@ on:
   workflow_run:
     workflows: [Integration]
     types: [completed]
-    branches-ignore:
-      - main
+    # branches-ignore:
+    #   - main
 
 jobs:
   reset_triggers:
