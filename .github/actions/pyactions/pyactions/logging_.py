@@ -26,13 +26,10 @@ class ActionsLogger:
         yield
         print(f"::endgroup::")
 
-    def _display_exception(self, e):
-        with self.group(title=str(e)):
-            self.info(f'{type(e)=}')
-            traceback.print_exc()
-
     def exception(self, e):
-        self._display_exception(e)
+        with self.group(title=repr(e)):
+            print(f'{type(e)=}')
+            traceback.print_exc()
 
     def _display_pr(self, pr, title=None):
         title = title or f'PR #{pr.number} - {pr.title}'
@@ -54,7 +51,7 @@ class ActionsLogger:
 
         for key, obj_to_display in kwargs.items():
             if key in {'pr', 'pull', 'pull_request'}:
-                self._display_pr(pr, title=title)
+                self._display_pr(obj_to_display, title=title)
             else:
                 title = title or _varname_to_dotted(key)
                 self._display_generic(obj_to_display, title=title)
