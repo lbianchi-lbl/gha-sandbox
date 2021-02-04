@@ -37,9 +37,17 @@ jobs:
         with:
           script: |
             from .reviews import PullReviews
-            for pr in api.pulls.list():
-                with log.group(f"Checking reviews for PR #{pr.number}"):
-                    log.display(pr=pr)
-                    reviews = PullReviews.fetch(api, pr=pr)
-                    log.display(reviews__latest_by_user=reviews.latest_by_user)
-                    log.info(f'{reviews.is_status_approved=}')
+
+            review_event_sha = event.workflow_run.head_commit.id
+            log.info(f'{review_event_sha=}')
+            prs_matching_review_event = [
+                pr for pr in api.pulls.list()
+                if pr.head.sha == review_event_sha
+            ]
+            log.info(f'{len(prs_matching_review_event)=}')
+
+            for pr in prs_matching_review_event:
+                log.display(pr=pr)
+                reviews = PullReviews.fetch(api, pr=pr)
+                log.display(reviews__latest_by_user=reviews.latest_by_user)
+                log.info(f'{reviews.is_status_approved=}')
