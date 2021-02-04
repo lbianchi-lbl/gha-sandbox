@@ -1,0 +1,44 @@
+name: Check PR review approval
+
+on:
+  workflow_run:
+    workflows: [_util:On PR review]
+    types: [completed]
+  workflow_dispatch:
+
+
+jobs:
+  check-skip:
+    name: Check if other jobs should be skipped
+    runs-on: ubuntu-latest
+    if: (github.event.action != 'completed') || (github.event.workflow_run.conclusion == 'success')
+    steps:
+      - name: Notify that workflow run was not skipped
+        run: echo "This workflow run was not skipped"
+  check-approval-status:
+    name: Check PR approval status
+    needs: [check-skip]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: ./.github/actions/pyactions
+        name: Display event
+        env:
+          CONTEXT_GITHUB: ${{ toJSON(github) }}
+        with:
+          script: |
+            log.display(github=github)
+            log.display(github__event=github.event)
+      - uses: ./.github/actions/pyactions
+        name: Analyze reviews
+        env:
+          CONTEXT_GITHUB: ${{ toJSON(github) }}
+          GITHUB_TOKEN: ${{ secrets.PYACTIONS_TOKEN }}  # needed to access the branch protection
+        with:
+          script: |
+            from .reviews import PullReviews
+            for pr in api.pulls.list():
+                log.display(pr=pr)
+                reviews = PullReviews.fetch(api, pr=pr)
+                log.display(reviews__latest_by_user=reviews.latest_by_user)
+                log.info(f'{reviews.is_status_approved=}')

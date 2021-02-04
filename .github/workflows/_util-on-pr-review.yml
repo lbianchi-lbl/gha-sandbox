@@ -1,0 +1,14 @@
+name: _util:On PR review
+
+on:
+  pull_request_review:
+    types: [submitted, edited]
+
+jobs:
+  main:
+    name: Trigger checks on PR review approval status
+    runs-on: ubuntu-latest
+    if: github.event.review.state == 'APPROVED'
+    steps:
+      - name: Notify that workflow run was not skipped
+        run: echo "This workflow run was not skipped"
