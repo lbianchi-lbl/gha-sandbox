@@ -62,7 +62,7 @@ class ActionsLogger:
             **kwargs
         ):
         if obj is not None:
-            self._display_generic(title=title)
+            self._display_generic(obj, title=title)
 
         for key, obj_to_display in kwargs.items():
             if key in {'pr', 'pull', 'pull_request'}:
