@@ -1,4 +1,5 @@
 import contextlib
+import sys
 import traceback
 
 
@@ -27,12 +28,23 @@ class ActionsLogger:
         print(f"::endgroup::")
 
     def exception(self, e):
+        exc_type = type(e)
         with self.group(title=repr(e)):
-            print(f'{type(e)=}')
-            traceback.print_exc()
+            print(f'{exc_type=}')
+            traceback.print_exception(
+                exc_type,
+                e,
+                e.__traceback__,
+                None,
+                sys.stdout
+            )
 
     def _display_pr(self, pr, title=None):
-        title = title or f'PR #{pr.number} - {pr.title}'
+        if title is None:
+            title = f'PR #{pr.number}'
+            if pr_title := getattr(pr, "title"):
+                title += f' - {pr_title}'
+
         with self.group(title):
             print(pr)
 
