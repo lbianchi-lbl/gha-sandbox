@@ -38,15 +38,21 @@ jobs:
           script: |
             from .reviews import PullReviews
 
-            review_event_sha = github.event.workflow_run.head_commit.id
-            log.info(f'{review_event_sha=}')
-            prs_matching_review_event = [
-                pr for pr in api.pulls.list()
-                if pr.head.sha == review_event_sha
-            ]
-            log.info(f'{len(prs_matching_review_event)=}')
+            reviewable_prs = api.pulls.list()
 
-            for pr in prs_matching_review_event:
+            if github.event_name == 'workflow_run':
+                review_event_sha = github.event.workflow_run.head_commit.id
+                log.info(f'{review_event_sha=}')
+                prs_matching_review_event = [
+                    pr for pr in reviewable_prs
+                    if pr.head.sha == review_event_sha
+                ]
+                log.info(f'{len(prs_matching_review_event)=}')
+                prs_to_check = prs_matching_review_event
+            else:
+                prs_to_check = reviewable_prs
+
+            for pr in prs_to_check:
                 log.display(pr=pr)
                 reviews = PullReviews.fetch(api, pr=pr)
                 log.display(reviews__latest_by_user=reviews.latest_by_user)
