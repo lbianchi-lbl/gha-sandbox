@@ -42,8 +42,11 @@ class ActionsLogger:
     def _display_pr(self, pr, title=None):
         if title is None:
             title = f'PR #{pr.number}'
-            if pr_title := getattr(pr, "title"):
-                title += f' - {pr_title}'
+            try:
+                # some API objects representing PRs have fewer fields
+                title += f' - {pr.title}'
+            except AttributeError:
+                pass
 
         with self.group(title):
             print(pr)
