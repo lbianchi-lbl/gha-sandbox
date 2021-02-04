@@ -9,9 +9,10 @@ on:
 
 jobs:
   reset_triggers:
-    name: Display event info
+    name: Reset integration triggers
     runs-on: ubuntu-latest
     # if: github.event.workflow_run.pull_requests[0] != null
+    if: contains(github.event.workflow_run.event, 'pull_request')
     steps:
       - uses: actions/checkout@v2
       - uses: ./.github/actions/pyactions
@@ -30,7 +31,15 @@ jobs:
         with:
           script: |
             log.display(context_github=context_github)
-            prs = context_github.event.workflow_run.pull_requests
+            run_data = github.event.workflow_run
+            log.display(run_data=run_data)
+            prs = run_data.pull_requests
+            if not prs:
+                prs = [
+                    pr for pr in api.pulls.list()
+                    if pr.head.sha == run_data.head_sha
+                ]
+            log.info(f'{len(prs)}')
             trigger = LabelAddTrigger("CI:run")
             for pr in prs:
                 log.display(pr=pr) 
