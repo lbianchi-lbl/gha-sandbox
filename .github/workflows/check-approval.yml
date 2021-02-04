@@ -38,7 +38,7 @@ jobs:
           script: |
             from .reviews import PullReviews
 
-            review_event_sha = event.workflow_run.head_commit.id
+            review_event_sha = github.event.workflow_run.head_commit.id
             log.info(f'{review_event_sha=}')
             prs_matching_review_event = [
                 pr for pr in api.pulls.list()
