@@ -1,4 +1,4 @@
-name: _util:On PR review
+name: _On PR review
 
 on:
   pull_request_review:
