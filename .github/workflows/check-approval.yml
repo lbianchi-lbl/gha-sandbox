@@ -2,7 +2,7 @@ name: Check PR review approval
 
 on:
   workflow_run:
-    workflows: [_On PR review]
+    workflows: [(util) On PR review]
     types: [completed]
   workflow_dispatch:
 
