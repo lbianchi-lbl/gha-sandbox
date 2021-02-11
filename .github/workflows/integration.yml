@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     # if: (github.event.action == 'labeled') && (github.event.label.name == 'CI:run')
     # if: (!contains(github.event_name, 'pull_request') || (startswith(github.event.label.name, 'CI:run') && endswith(github.event.label.name, github.workflow)))
-    if: (!contains(github.event_name, 'pull_request') || (fromJSON(github.event.label.description).triggers_workflow == github.workflow))
+    if: (github.event.action != 'labeled') || (fromJSON(github.event.label.description).triggers_workflow == github.workflow))
     steps:
       - name: Wait a bit
         run: sleep 30; echo "Done!"
