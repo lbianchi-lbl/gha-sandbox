@@ -60,12 +60,8 @@ jobs:
       - name: Test if condition
         if: >-
           contains(
-            [
-              'approved_pr',
-              'not_pr',
-              'user_dispatch'
-            ],
-            needs.precheck.outputs.workflow-trigger
+            '|approved_pr|not_pr|user_dispatch|',
+            format('|{0}|', needs.precheck.outputs.workflow-trigger)
           )
         run: echo "If I'm running, the main job should be running as well"
 
@@ -74,12 +70,8 @@ jobs:
     needs: [precheck]
     if: >-
       contains(
-        [
-          'approved_pr',
-          'not_pr',
-          'user_dispatch'
-        ],
-        needs.precheck.outputs.workflow-trigger
+        '|approved_pr|not_pr|user_dispatch|',
+        format('|{0}|', needs.precheck.outputs.workflow-trigger)
       )
     steps:
       - name: Wait a bit
