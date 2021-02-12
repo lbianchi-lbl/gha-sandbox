@@ -26,13 +26,26 @@ jobs:
       )
     outputs:
       is-pr-approved: ${{ steps.check-pr-approval.outputs.is-approved }}
+      workflow-trigger: ${{ steps.set-outputs.outputs.workflow-trigger }}
     steps:
       - uses: actions/checkout@v2
+      - uses: ./.github/actions/display-debug-info
       - id: check-pr-approval
         uses: ./.github/actions/check-if-approved
         if: contains(github.event_name, 'pull_request')
         with:
           number: ${{ github.event.pull_request.number }}
+      - if: steps.check-approval.outputs.is-approved == 'true'
+        run: echo "workflow_trigger=approved_pr" >> $GITHUB_ENV
+      - if: steps.check-approval.outputs.is-approved == 'false'
+        run: echo "workflow_trigger=unapproved_pr" >> $GITHUB_ENV
+      - if: "!contains(github.event_name, 'pull_request')"
+        run: echo "workflow_trigger=not_pr" >> $GITHUB_ENV
+      - if: github.event.action == 'labeled'
+        run: echo "workflow_trigger=user_dispatch" >> $GITHUB_ENV
+      - id: set-outputs
+        run: |
+          echo "::set-output name=workflow-trigger::$workflow_trigger"
   debug_precheck:
     runs-on: ubuntu-latest
     needs: precheck
@@ -43,21 +56,31 @@ jobs:
           ${{ toJSON(needs.precheck.outputs) }}
           EOF
           echo "precheck.outputs.is-pr-approved=${{ needs.precheck.outputs.is-pr-approved }}"
+          echo "precheck.outputs.workflow-trigger=${{ needs.precheck.outputs.workflow-trigger }}"
       - name: Test if condition
-        if: needs.precheck.outputs.is-pr-approved != 'false'
+        if: >-
+          contains(
+            [
+              'approved_pr',
+              'not_pr',
+              'user_dispatch'
+            ],
+            needs.precheck.outputs.workflow-trigger
+          )
         run: echo "If I'm running, the main job should be running as well"
 
   my_job:
     runs-on: ubuntu-latest
-    # if: (github.event.action == 'labeled') && (github.event.label.name == 'CI:run')
-    # if: (!contains(github.event_name, 'pull_request') || (startswith(github.event.label.name, 'CI:run') && endswith(github.event.label.name, github.workflow)))
     needs: [precheck]
-    if: needs.precheck.outputs.is-pr-approved != 'false'
-    # if: >-
-    #   (
-    #     fromJSON(needs.precheck.outputs.is-pr-approved) != false
-    #     || !contains(github.event_name, 'pull_request')
-    #   )
+    if: >-
+      contains(
+        [
+          'approved_pr',
+          'not_pr',
+          'user_dispatch'
+        ],
+        needs.precheck.outputs.workflow-trigger
+      )
     steps:
       - name: Wait a bit
         run: sleep 60; echo "Done!"
