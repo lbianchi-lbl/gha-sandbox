@@ -8,11 +8,21 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - name: Display labels
-        uses: ./.github/actions/pyactions
+      - uses: ./.github/actions/pyactions
+        name: Display PRs
         with:
           script: |
-            for pr in api.pulls.get():
-                with _log.group(pr.title):
-                    print(pr)
+            for pr in api.pulls.list():
+                log.display(pr=pr)
+      - uses: ./.github/actions/pyactions
+        name: Trigger test workflow on PRs
+        env:
+          GITHUB_TOKEN: ${{ secrets.PYACTIONS_TOKEN }}
+        with:
+          script: |
+            trigger = LabelAddTrigger("CI:run")
+            for pr in api.pulls.list():
+                log.display(pr=pr)
+                trigger.emit(api, target=pr, reset_now=False)
+
 

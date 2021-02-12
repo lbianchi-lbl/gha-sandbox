@@ -7,39 +7,6 @@ import typing as t
 from ghapi.all import GhApi
 
 
-class Logger:
-    "Pseudo-logging.Logger compatible with GitHub Actions workflow commands output format"
-
-    def debug(self, msg):
-        print(f"::debug::{msg}")
-
-    def info(self, msg):
-        print(msg)
-
-    def warning(self, msg):
-        print(f"::warning::{msg}")
-
-    def error(self, msg):
-        print(f"::error::{msg}")
-
-    def critical(self, msg):
-        self.error(f"CRITICAL: {msg}")
-
-    @contextlib.contextmanager
-    def group(self, title):
-        print(f"::group::{title}")
-        yield
-        print(f"::endgroup::")
-
-    def exception(self, e):
-        with self.group(str(e)):
-            self.info(e)
-
-    def display(self, title, obj):
-        with self.group(title):
-            self.info(obj)
-
-
 def get_github_env(name: str, fallback="", prefix: str = 'GITHUB_'):
     return os.environ.get(f"{prefix}{name.upper()}", fallback)
 

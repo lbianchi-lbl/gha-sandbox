@@ -1,0 +1,31 @@
+name: Check PR approval
+description: Determines if a PR is approved by reviewers
+inputs:
+  number:
+    description: Number of the PR to check
+    required: true
+  query-result-path:
+    description: File where the result of the API query will be saved
+    required: false
+    default: query-result.json
+outputs:
+  is-approved:
+    description: Set to 'true' if PR is approved, 'false' otherwise
+    value: ${{ steps.check-approval.outputs.is-approved }}
+runs:
+  using: composite
+  steps:
+    - id: do-search
+      run: |
+        url="$GITHUB_API_URL/search/issues?q=repo:$GITHUB_REPOSITORY+is:pr+is:open+review:approved"
+        curl "$url" > "${{ inputs.query-result-path }}"
+        echo "::group::Query results"
+        jq . "${{ inputs.query-result-path }}"
+        echo "::endgroup"
+      shell: bash
+    - id: check-approval
+      shell: bash
+      run: |
+        jq_query=".items | any(.number == ${{ inputs.number }})"
+        is_approved=$(jq "$jq_query" "${{ inputs.query-result-path }}")
+        echo "::set-output name=is-approved::$is_approved"
