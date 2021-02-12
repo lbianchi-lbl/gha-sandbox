@@ -2,25 +2,58 @@ name: Integration
 
 on:
   pull_request:
-    types: [labeled]
+    types: [labeled, synchronize]
+  pull_request_review:
+    types: [submitted]
   workflow_dispatch:
 
-
 jobs:
+  precheck:
+    runs-on: ubuntu-latest
+    if: >-
+      (
+        (
+          github.event.action == 'labeled'
+          && contains(github.event.label.description, 'triggers_workflow')
+          && contains(github.event.label.description, github.workflow)
+        )
+        || (
+          github.event.action == 'submitted'
+          && github.event.review.state == 'APPROVED'
+        )
+        || github.event.action == 'synchronize'
+        || !contains(github.event_name, 'pull_request')
+      )
+    outputs:
+      is-pr-approved: ${{ steps.check-pr-approval.outputs.is-approved }}
+    steps:
+      - uses: actions/checkout@v2
+      - id: check-pr-approval
+        uses: ./.github/actions/check-if-approved
+        if: contains(github.event_name, 'pull_request')
+        with:
+          number: ${{ github.event.pull_request.number }}
+  debug_precheck:
+    runs-on: ubuntu-latest
+    needs: precheck
+    steps:
+      - name: Show precheck output
+        run: echo "precheck.outputs=${{ needs.precheck.outputs }}"
+      - name: Test if condition
+        if: needs.precheck.outputs.is-pr-approved != 'false'
+        run: echo "If I'm running, the main job should be running as well"
+
   my_job:
     runs-on: ubuntu-latest
     # if: (github.event.action == 'labeled') && (github.event.label.name == 'CI:run')
     # if: (!contains(github.event_name, 'pull_request') || (startswith(github.event.label.name, 'CI:run') && endswith(github.event.label.name, github.workflow)))
-    if: >-
-      (
-        github.event.action != 'labeled'
-        ||
-        (
-          contains(github.event.label.description, 'triggers_workflow')
-          &&
-          contains(github.event.label.description, github.workflow)
-        )
-      )
+    needs: [precheck]
+    if: needs.precheck.outputs.is-pr-approved != 'false'
+    # if: >-
+    #   (
+    #     fromJSON(needs.precheck.outputs.is-pr-approved) != false
+    #     || !contains(github.event_name, 'pull_request')
+    #   )
     steps:
       - name: Wait a bit
-        run: sleep 30; echo "Done!"
+        run: sleep 60; echo "Done!"
