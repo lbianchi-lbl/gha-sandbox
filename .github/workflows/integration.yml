@@ -38,7 +38,7 @@ jobs:
     needs: precheck
     steps:
       - name: Show precheck output
-        run: echo "precheck.outputs=${{ needs.precheck.outputs }}"
+        run: jq . <<< '${{ toJSON(needs.precheck.outputs) }}'
       - name: Test if condition
         if: needs.precheck.outputs.is-pr-approved != 'false'
         run: echo "If I'm running, the main job should be running as well"
