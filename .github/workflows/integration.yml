@@ -48,7 +48,7 @@ jobs:
 
           if [ ${{ contains(github.event_name, 'pull_request')}} = 'false' ] ; then
               workflow_trigger='not_pr'
-          elif [ ${{ github.event.action }} = 'labeled'] ; then
+          elif [ ${{ github.event.action }} = 'labeled' ] ; then
               workflow_trigger='user_dispatch'
           elif [ $is_approved = 'true' ] ; then
               workflow_trigger='approved_pr'
