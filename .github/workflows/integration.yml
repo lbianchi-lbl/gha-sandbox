@@ -41,7 +41,10 @@ jobs:
           ${{ toJSON(steps) }}
           EOF
           echo "steps.check-pr-approval.outputs.is-approved=${{ steps.check-pr-approval.outputs.is-approved }}"
-          echo "steps.check-pr-approval.outputs.is-approved==true=${{ steps.check-pr-approval.outputs.is-approved == 'true' }}"
+          echo "is-approved==true with quotes=${{ steps.check-pr-approval.outputs.is-approved == 'true' }}"
+          echo "is-approved==true sin quotes=${{ steps.check-pr-approval.outputs.is-approved == true }}"
+          echo "is-approved==false with quotes=${{ steps.check-pr-approval.outputs.is-approved == 'false' }}"
+          echo "is-approved==false sin quotes=${{ steps.check-pr-approval.outputs.is-approved == false }}"
       - if: steps.check-approval.outputs.is-approved == true
         run: echo "workflow_trigger=approved_pr" >> $GITHUB_ENV
       - if: steps.check-approval.outputs.is-approved == false
