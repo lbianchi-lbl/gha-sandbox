@@ -56,6 +56,7 @@ jobs:
               workflow_trigger='unapproved_pr'
           else
               workflow_trigger='unexpected'
+          fi
 
           echo "workflow_trigger=$workflow_trigger"
           echo "::set-output name=workflow-trigger::$workflow_trigger"
