@@ -28,4 +28,4 @@ runs:
       run: |
         jq_query=".items | any(.number == ${{ inputs.number }})"
         is_approved=$(jq "$jq_query" "${{ inputs.query-result-path }}")
-        echo "::set-output ::name=is-approved $is_approved"
+        echo "::set-output name=is-approved::$is_approved"
