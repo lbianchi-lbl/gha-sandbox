@@ -79,6 +79,19 @@ jobs:
             || needs.precheck.outputs.workflow-trigger == 'approved_pr'
           )
         run: echo "If I'm running, the main job should be running as well"
+  debug_label:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: ./.github/actions/display-debug-info
+      - name: Test label condition
+        if: >-
+          (
+            github.event.action == 'labeled'
+            && contains(github.event.label.description, 'triggers_workflow')
+            && contains(github.event.label.description, github.workflow)
+          )
+        run: echo "${{ github.event.label.description }}"
 #
   my_job:
     runs-on: ubuntu-latest
