@@ -35,6 +35,13 @@ jobs:
         if: contains(github.event_name, 'pull_request')
         with:
           number: ${{ github.event.pull_request.number }}
+      - name: Show precheck output
+        run: |
+          jq . <<EOF
+          ${{ toJSON(steps) }}
+          EOF
+          echo "steps.check-pr-approval.outputs.is-approved=${{ steps.check-pr-approval.outputs.is-approved }}"
+          echo "steps.check-pr-approval.outputs.is-approved==true=${{ steps.check-pr-approval.outputs.is-approved == 'true' }}"
       - if: steps.check-approval.outputs.is-approved == 'true'
         run: echo "workflow_trigger=approved_pr" >> $GITHUB_ENV
       - if: steps.check-approval.outputs.is-approved == 'false'
