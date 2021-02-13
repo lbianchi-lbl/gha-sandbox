@@ -8,11 +8,11 @@ jobs:
   clean-labels:
     name: (util) Clean workflow trigger labels
     runs-on: ubuntu-latest
-    if: contains(github.event.pull_request.label.description, 'triggers_workflow')
+    if: contains(github.event.label.description, 'triggers_workflow')
     env:
       GITHUB_TOKEN: ${{ secrets.BOT_USER_TOKEN }}
       pull_number: ${{ github.event.pull_request.number }}
-      label_name: ${{ github.event.pull_request.label.name }}
+      label_name: ${{ github.event.label.name }}
     steps:
       - name: Issue API call to remove label
         run:
