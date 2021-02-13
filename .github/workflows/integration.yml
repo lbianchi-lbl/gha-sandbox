@@ -9,6 +9,7 @@ on:
 
 jobs:
   precheck:
+    name: (util) Check if should run
     runs-on: ubuntu-latest
     if: >-
       (
@@ -61,6 +62,7 @@ jobs:
           echo "::warning ::workflow_trigger=$workflow_trigger (event/action=${{ github.event_name }}/${{ github.event.action }})"
           echo "::set-output name=workflow-trigger::$workflow_trigger"
   debug_precheck:
+    name: (util) Debug precheck job
     runs-on: ubuntu-latest
     needs: precheck
     steps:
@@ -80,6 +82,7 @@ jobs:
           )
         run: echo "If I'm running, the main job should be running as well"
   debug_label:
+    name: (util) Debug label triggers
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -93,7 +96,8 @@ jobs:
           )
         run: echo "${{ github.event.label.description }}"
 #
-  my_job:
+  tests:
+    name: Run tests
     runs-on: ubuntu-latest
     needs: [precheck]
     if: >-
