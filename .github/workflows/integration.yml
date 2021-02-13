@@ -58,7 +58,7 @@ jobs:
               workflow_trigger="unexpected"
           fi
 
-          echo "::warning ::workflow_trigger=$workflow_trigger"
+          echo "::warning ::workflow_trigger=$workflow_trigger (event/action=${{ github.event_name }}/${{ github.event.action }})"
           echo "::set-output name=workflow-trigger::$workflow_trigger"
   debug_precheck:
     runs-on: ubuntu-latest
