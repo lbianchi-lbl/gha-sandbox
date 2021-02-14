@@ -10,7 +10,7 @@ on:
 jobs:
   precheck:
     name: (util) Check if should run
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     if: >-
       (
         (
@@ -46,7 +46,7 @@ jobs:
       - id: set-outputs
         env:
           _GITHUB_EVENT_ACTION: ${{ github.event.action }}
-        shell: python3
+        shell: python {0}
         run: |
           import json
           from os import environ as env
