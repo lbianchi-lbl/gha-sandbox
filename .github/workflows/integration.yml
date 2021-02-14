@@ -46,7 +46,7 @@ jobs:
       - id: set-outputs
         env:
           _GITHUB_EVENT_ACTION: ${{ github.event.action }}
-        shell: python -c {0}
+        shell: python3
         run: |
           import json
           from os import environ as env
