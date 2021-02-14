@@ -42,25 +42,47 @@ jobs:
           ${{ toJSON(steps) }}
           EOF
           echo "steps.check-pr-approval.outputs.is-approved=${{ steps.check-pr-approval.outputs.is-approved }}"
+          echo "is_pr_approved=${{ steps.check-pr-approval.outputs.is-approved }}" >> $GITHUB_ENV
       - id: set-outputs
-        name: Set outputs
+        env:
+          _GITHUB_EVENT_ACTION: ${{ github.event.action }}
+        shell: python -c {0}
         run: |
-          is_approved="${{ steps.check-pr-approval.outputs.is-approved }}"
+          import json
+          from os import environ as env
 
-          if [ ${{ contains(github.event_name, 'pull_request')}} = "false" ] ; then
-              workflow_trigger="not_pr"
-          elif [ ${{ github.event.action }} = "labeled" ] ; then
-              workflow_trigger="user_dispatch"
-          elif [ $is_approved = "true" ] ; then
-              workflow_trigger="approved_pr"
-          elif [ $is_approved = "false" ] ; then
-              workflow_trigger="unapproved_pr"
-          else
-              workflow_trigger="unexpected"
-          fi
+          def _display(msg):
+              print(f'::warning ::{msg}')
+          def _dict2table(d):
+              return '\n'.join(f'{k}:\t{v}' for k, v in d.items())
+          def _set_output(name, val):
+              print(f'::set-output name={name}::{val}')
 
-          echo "::warning ::workflow_trigger=$workflow_trigger (event/action=${{ github.event_name }}/${{ github.event.action }})"
-          echo "::set-output name=workflow-trigger::$workflow_trigger"
+          event_name = env["GITHUB_EVENT_NAME"]
+          event_action = env["_GITHUB_EVENT_ACTION"]
+          is_pr = 'pull_request' in event_name.lower():
+          is_pr_approved = json.loads(env.get("is_pr_approved", "null"))
+
+          workflow_trigger = 'undetermined'
+
+          if is_pr:
+              if event_action == 'labeled':
+                  workflow_trigger = 'user_dispatch'
+              elif is_pr_approved is True:
+                  workflow_trigger = 'approved_pr'
+              elif is_pr_approved is False:
+                  workflow_trigger = 'unapproved_pr'
+          else:
+              workflow_trigger = 'not_pr'
+
+          info = {
+              'workflow_trigger': workflow_trigger,
+              'event_name': event_name,
+              'event_action': event_action or 'N/A',
+              'is_pr_approved': is_pr_approved or 'N/A'
+          }
+          _display(_dict2table(info))
+          _set_output('workflow_trigger', workflow_trigger)
   debug_precheck:
     name: (util) Debug precheck job
     runs-on: ubuntu-latest
