@@ -53,8 +53,6 @@ jobs:
 
           def _display(msg):
               print(f'::warning ::{msg}')
-          def _dict2table(d):
-              return '\n'.join(f'{k}:\t{v}' for k, v in d.items())
           def _set_output(name, val):
               print(f'::set-output name={name}::{val}')
 
@@ -75,13 +73,8 @@ jobs:
           else:
               workflow_trigger = 'not_pr'
 
-          info = {
-              'workflow_trigger': workflow_trigger,
-              'event_name': event_name,
-              'event_action': event_action or 'N/A',
-              'is_pr_approved': is_pr_approved or 'N/A'
-          }
-          _display(_dict2table(info))
+          msg = f'{workflow_trigger=}    event/action={event_name}/{event_action or "N/A"}    is_pr_approved={is_pr_approved or "N/A"}'
+          _display(msg)
           _set_output('workflow_trigger', workflow_trigger)
   debug_precheck:
     name: (util) Debug precheck job
