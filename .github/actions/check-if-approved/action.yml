@@ -17,7 +17,7 @@ runs:
   steps:
     - id: run-query
       run: |
-        gh api search/issues -F q="repo:$GITHUB_REPOSITORY is:pr is:open review:approved" > "${{ inputs.query_result_path }}"
+        gh api search/issues -F q="repo:$GITHUB_REPOSITORY is:pr is:open review:approved" > "${{ inputs.query-result-path }}"
         echo "::group::Query results"
         jq . "${{ inputs.query-result-path }}"
         echo "::endgroup"
