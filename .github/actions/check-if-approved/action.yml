@@ -16,6 +16,8 @@ runs:
   using: composite
   steps:
     - id: run-query
+      env:
+        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
         gh api search/issues --method GET --field q="repo:$GITHUB_REPOSITORY is:pr is:open review:approved" > "${{ inputs.query-result-path }}"
         echo "::group::Query results"
