@@ -59,7 +59,7 @@ jobs:
           event_name = env["GITHUB_EVENT_NAME"]
           event_action = env["_GITHUB_EVENT_ACTION"]
           is_pr = 'pull_request' in event_name.lower()
-          is_pr_approved = json.loads(env.get("is_pr_approved") or "null"))
+          is_pr_approved = json.loads(env.get("is_pr_approved") or "null")
 
           workflow_trigger = 'undetermined'
 
