@@ -17,7 +17,7 @@ runs:
   steps:
     - id: run-query
       run: |
-        echo "GITHUB_TOKEN" | gh auth login --with-token
+        gh auth status
         gh api search/issues --method GET --field q="repo:$GITHUB_REPOSITORY is:pr is:open review:approved" > "${{ inputs.query-result-path }}"
         echo "::group::Query results"
         jq . "${{ inputs.query-result-path }}"
