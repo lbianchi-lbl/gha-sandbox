@@ -15,10 +15,9 @@ outputs:
 runs:
   using: composite
   steps:
-    - id: do-search
+    - id: run-query
       run: |
-        url="$GITHUB_API_URL/search/issues?q=repo:$GITHUB_REPOSITORY+is:pr+is:open+review:approved"
-        curl "$url" > "${{ inputs.query-result-path }}"
+        gh api search/issues -F q="repo:$GITHUB_REPOSITORY is:pr is:open review:approved" > "${{ inputs.query_result_path }}"
         echo "::group::Query results"
         jq . "${{ inputs.query-result-path }}"
         echo "::endgroup"
