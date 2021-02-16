@@ -75,7 +75,7 @@ jobs:
 
           msg = f'{workflow_trigger=}    event/action={event_name}/{event_action or "N/A"}    is_pr_approved={is_pr_approved or "N/A"}'
           _display(msg)
-          _set_output('workflow_trigger', workflow_trigger)
+          _set_output('workflow-trigger', workflow_trigger)
   debug_precheck:
     name: (util) Debug precheck job
     runs-on: ubuntu-latest
