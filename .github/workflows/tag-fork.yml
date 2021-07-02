@@ -29,7 +29,7 @@ jobs:
     steps:
       - name: Clone target repo
         run: |
-          fork_url="https://github.com/lbianchi-lbl/$fork_name"
+          fork_url="https://${{ secrets.BOT_USER_TOKEN }}@github.com/lbianchi-lbl/$fork_name"
           git clone "$fork_url"
           cd "$fork_name"
           git log --oneline -n 10 --decorate=full
