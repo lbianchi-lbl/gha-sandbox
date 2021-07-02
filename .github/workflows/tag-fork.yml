@@ -32,7 +32,8 @@ jobs:
           fork_url="https://github.com/lbianchi-lbl/$fork_name"
           git clone "$fork_url"
           cd "$fork_name"
-          git pull upstream --ff-only
+          git log --oneline -n 10
+          git pull https://github.com/pyomo/pyomo --ff-only
           git log --oneline -n 10
           # git check 
           git tag $tag
