@@ -1,0 +1,40 @@
+name: Tag fork
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: The tag to create.
+        required: true
+      tag_target_ref:
+        description: The Git ref to be tagged.
+        required: false
+        default: HEAD
+      fork_name:
+        description: The name of the fork in this organization that will be synchronized
+        required: false
+        default: pyomo
+      pull_request_number:
+        description: If given, the tag will point to the hash where the PR with this number was merged
+        required: false
+        default: ""
+
+jobs:
+  sync-tag-push:
+    runs-on: ubuntu-latest
+    env:
+      tag: ${{ github.events.inputs.tag }}
+      tag_target_ref: ${{ github.events.inputs.tag_target_ref }}
+      fork_name: ${{ github.events.inputs.fork_name }}
+    steps:
+      - name: Clone target repo
+        run: |
+          fork_url="https://github.com/lbianchi-lbl/$fork_name"
+          git clone "$fork_url"
+          cd "$fork_name"
+          git pull upstream --ff-only
+          git log --oneline -n 10
+          # git check 
+          git tag $tag
+          git log --oneline -n 10
+          git push --all --tags $fork_url
