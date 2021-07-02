@@ -23,9 +23,9 @@ jobs:
   sync-tag-push:
     runs-on: ubuntu-latest
     env:
-      tag: ${{ github.events.inputs.tag }}
-      tag_target_ref: ${{ github.events.inputs.tag_target_ref }}
-      fork_name: ${{ github.events.inputs.fork_name }}
+      tag: ${{ github.event.inputs.tag }}
+      tag_target_ref: ${{ github.event.inputs.tag_target_ref }}
+      fork_name: ${{ github.event.inputs.fork_name }}
     steps:
       - name: Clone target repo
         run: |
