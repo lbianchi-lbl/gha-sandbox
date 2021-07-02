@@ -38,4 +38,5 @@ jobs:
           # git check 
           git tag $tag
           git log --oneline -n 10 --decorate=full
-          git push --all --tags $fork_url
+          git push --all $fork_url
+          git push --tags $fork_url
