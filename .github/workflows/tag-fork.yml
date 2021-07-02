@@ -32,10 +32,10 @@ jobs:
           fork_url="https://github.com/lbianchi-lbl/$fork_name"
           git clone "$fork_url"
           cd "$fork_name"
-          git log --oneline -n 10
+          git log --oneline -n 10 --decorate=full
           git pull https://github.com/pyomo/pyomo --ff-only
-          git log --oneline -n 10
+          git log --oneline -n 10 --decorate=full
           # git check 
           git tag $tag
-          git log --oneline -n 10
+          git log --oneline -n 10 --decorate=full
           git push --all --tags $fork_url
