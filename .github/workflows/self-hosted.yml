@@ -16,6 +16,6 @@ jobs:
           conda create --yes --name gh-wf-env python=3.8 pip
           conda activate gh-wf-env
           which python
-          pip install proteuslib pytest
+          pip install proteuslib pytest coverage pytest-cov
           wget https://raw.githubusercontent.com/nawi-hub/proteuslib/main/pytest.ini
           pytest --pyargs proteuslib
