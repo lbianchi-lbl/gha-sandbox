@@ -17,5 +17,6 @@ jobs:
           conda activate gh-wf-env
           which python
           pip install proteuslib pytest coverage pytest-cov
+          idaes get-extensions
           wget https://raw.githubusercontent.com/nawi-hub/proteuslib/main/pytest.ini
           pytest --pyargs proteuslib
