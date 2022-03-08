@@ -1,0 +1,20 @@
+name: Triage
+
+on:
+  issues:
+    types:
+      - opened
+  pull_request_target:
+    types:
+      - opened
+
+jobs:
+  add-to-project:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: alex-page/github-project-automation-plus@bb266ff4dde9242060e2d5418e120a133586d488
+        with:
+          project: Priorities
+          column: Inbox
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+
