@@ -16,5 +16,5 @@ jobs:
         with:
           project: Priorities
           column: Inbox
-          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          repo-token: ${{ secrets.TRIAGE_PAT }}
 
