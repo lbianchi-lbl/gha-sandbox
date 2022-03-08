@@ -1,4 +1,4 @@
-name: Triage
+name: (util) Triage
 
 on:
   issues:
@@ -9,7 +9,8 @@ on:
       - opened
 
 jobs:
-  add-to-project:
+  assign-project:
+    name: Assign project
     runs-on: ubuntu-latest
     steps:
       - uses: alex-page/github-project-automation-plus@bb266ff4dde9242060e2d5418e120a133586d488
