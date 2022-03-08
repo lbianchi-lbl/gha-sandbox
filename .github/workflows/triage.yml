@@ -10,11 +10,17 @@ on:
 
 jobs:
   add-to-project:
+    name: Add to project ${{ matrix.project }}
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        project:
+          - Priorities
+          - Priorities Beta
     steps:
       - uses: alex-page/github-project-automation-plus@bb266ff4dde9242060e2d5418e120a133586d488
         with:
-          project: Priorities
+          project: ${{ matrix.project }}
           column: Inbox
           repo-token: ${{ secrets.TRIAGE_PAT }}
 
