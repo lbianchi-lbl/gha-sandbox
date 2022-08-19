@@ -1,3 +1,4 @@
+name: Benchmark
 on:
   workflow_dispatch:
   schedule:
@@ -49,7 +50,7 @@ jobs:
       - name: Set up idaes
         run: |
           pip install -r requirements-dev.txt
-          idaes get-extensions --verbose
+          idaes get-extensions --extra petsc --verbose
       - name: Run pytest (not integration)
         run: |
           pytest -m "${{ matrix.pytest-marker }}"
