@@ -2,7 +2,7 @@ on:
   workflow_dispatch:
   schedule:
     # at minute 0 every 2nd hour
-    - 0 */2 * * *
+    - cron: 0 */2 * * *
   push:
 
 defaults:
