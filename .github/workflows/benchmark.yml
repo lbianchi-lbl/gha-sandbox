@@ -1,0 +1,55 @@
+on:
+  workflow_dispatch:
+  schedule:
+    # at minute 0 every 2nd hour
+    - 0 */2 * * *
+  push:
+
+defaults:
+  run:
+    shell: bash -l {0}
+
+jobs:
+  idaes-pse:
+    # description: Run pytest with dev dependencies
+    name: pytest (py${{ matrix.python-version }}/${{ matrix.os }}${{ matrix.suffix }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version:
+          - '3.7'
+          # - '3.8'
+          # - '3.9'
+          - '3.10'
+        os:
+          - ubuntu-18.04
+          - windows-latest
+        pytest-marker:
+          - not integration
+          - integration
+        include:
+          - pytest-marker: not integration
+            suffix: ""
+          - pytest-marker: integration
+            suffix: /integration
+    env:
+      IDAES_CONDA_ENV_NAME_DEV: idaes-pse-dev
+      PYTEST_ADDOPTS: "--color=yes"
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          repository: IDAES/idaes-pse
+          ref: a82afa170ffad8d9412b60ef06884db40909dddf
+      - name: Set up Conda environment
+        uses: conda-incubator/setup-miniconda@v2.1.1
+        with:
+          activate-environment: ${{ env.IDAES_CONDA_ENV_NAME_DEV }}
+          python-version: ${{ matrix.python-version }}
+      - name: Set up idaes
+        run: |
+          pip install -r requirements-dev.txt
+          idaes get-extensions --verbose
+      - name: Run pytest (not integration)
+        run: |
+          pytest -m "${{ matrix.pytest-marker }}"
