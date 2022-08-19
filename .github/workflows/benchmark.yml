@@ -2,8 +2,8 @@ name: Benchmark
 on:
   workflow_dispatch:
   schedule:
-    # at minute 0 every 2nd hour
-    - cron: 0 */2 * * *
+    # at minute 0 every hour
+    - cron: 0 * * * *
   push:
 
 defaults:
