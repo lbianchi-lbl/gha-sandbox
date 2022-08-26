@@ -1,0 +1,68 @@
+name: Assign matrix
+
+on:
+  workflow_dispatch:
+    inputs:
+
+      project-id:
+        description: Project ID
+        required: true
+        type: choice
+        options:
+        - idaes
+        - watertap
+        - dispatches
+
+      python-version:
+        description: Python version
+        type: choice
+        options:
+        - '3.7'
+        - '3.8'
+        - '3.9'
+        - '3.10'
+        required: false
+        default: '3.9'
+
+jobs:
+
+  vars:
+    runs-on: ubuntu-latest
+    outputs:
+      project-id: ${{ matrix.project-id }}
+      repository: ${{ matrix.repository }}
+      pypi-name: ${{ matrix.pypi-name }}
+      test-command: ${{ matrix.test-command }}
+    strategy:
+      fail-fast: true
+      matrix:
+        project-id:
+        - ${{ inputs.project-id }}
+        include:
+        - project-id: idaes
+          repository: IDAES/idaes-pse
+          pypi-name: idaes-pse
+          test-command: |
+            idaes get-extensions --extra petsc --verbose
+            pip install pytest
+            wget https://raw.githubusercontent.com/IDAES/idaes-pse/main/pytest.ini
+            pytest --pyargs idaes -m "unit" -x
+
+  other-job:
+    name: Other job for ${{ needs.vars.outputs.project-id }}
+    runs-on: ubuntu-latest
+    needs: [vars]
+    steps:
+      - name: Clone repo
+        uses: actions/checkout@v2
+        with:
+          repository: ${{ needs.vars.outputs.repository }}
+      - uses: actions/setup-python@v2
+        with:
+          python-version: ${{ inputs.python-version }}
+      - name: Install ${{ needs.vars.outputs.pypi-name }}
+        run: |
+          pip install --progress-bar off "${{ needs.vars.outputs.pypi-name }}"
+      - name: Run test command
+        run: |
+          ${{ needs.vars.outputs.test-command }}
