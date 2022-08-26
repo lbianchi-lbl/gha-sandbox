@@ -34,6 +34,7 @@ jobs:
       pypi-name: ${{ matrix.pypi-name }}
       test-command: ${{ matrix.test-command }}
       matrix: ${{ toJSON(matrix) }}
+      strategy: ${{ toJSON(strategy) }}
     strategy:
       fail-fast: true
       matrix:
@@ -56,9 +57,7 @@ jobs:
     name: Other job for ${{ needs.vars.outputs.project-id }}
     runs-on: ubuntu-latest
     needs: [vars]
-    strategy:
-      fail-fast: true
-      matrix: ${{ fromJSON(needs.vars.outputs.matrix )}}
+    strategy: ${{ fromJSON(needs.vars.outputs.strategy) }}
     steps:
       - name: Clone repo
         uses: actions/checkout@v2
