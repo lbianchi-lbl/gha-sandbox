@@ -33,7 +33,7 @@ jobs:
       repository: ${{ matrix.repository }}
       pypi-name: ${{ matrix.pypi-name }}
       test-command: ${{ matrix.test-command }}
-      matrix: ${{ matrix }}
+      matrix: ${{ toJSON(matrix) }}
     strategy:
       fail-fast: true
       matrix:
