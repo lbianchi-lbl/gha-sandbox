@@ -47,6 +47,9 @@ jobs:
             pip install pytest
             wget https://raw.githubusercontent.com/IDAES/idaes-pse/main/pytest.ini
             pytest --pyargs idaes -m "unit" -x
+    steps:
+    - name: Do nothing
+      run: sleep 1
 
   other-job:
     name: Other job for ${{ needs.vars.outputs.project-id }}
