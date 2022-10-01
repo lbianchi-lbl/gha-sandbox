@@ -19,15 +19,17 @@ jobs:
       - uses: ./.github/actions/matrixer
         id: set-matrix
         with:
-          data: |
-            foo: bar
-            baz: biz
-            test-command: |
-              pip install pytest
-              pytest
+          # data: |
+          #   foo: bar
+          #   baz: biz
+          #   test-command: |
+          #     pip install pytest
+          #     pytest
+          data: ./.github/actions/matrixer/project-data.yml
+          data-key: idaes
 
   use-strategy:  
-    name: Using strategy ${{ matrix.foo }}
+    name: Using strategy for ${{ matrix._key }}
     needs: [matrixer]
     runs-on: ubuntu-latest
 
@@ -35,12 +37,12 @@ jobs:
     steps:
 
       - uses: actions/setup-python@v2
-      - name: Run test command for ${{ matrix.foo }}
+      - name: Run test command for ${{ matrix.repository }}
         run: ${{ matrix.test-command }}
 
 
   use-matrix:
-    name: Using matrix ${{ matrix.foo }}
+    name: Using matrix for ${{ matrix._key }}
     needs: [matrixer]
     runs-on: ubuntu-latest
 
@@ -51,5 +53,5 @@ jobs:
     steps:
 
       - uses: actions/setup-python@v2
-      - name: Run test command for ${{ matrix.foo }}
+      - name: Run test command for ${{ matrix.repository }}
         run: ${{ matrix.test-command }}
