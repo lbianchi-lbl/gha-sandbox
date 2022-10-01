@@ -19,12 +19,6 @@ jobs:
       - uses: ./.github/actions/matrixer
         id: set-matrix
         with:
-          # data: |
-          #   foo: bar
-          #   baz: biz
-          #   test-command: |
-          #     pip install pytest
-          #     pytest
           data: ./.github/actions/matrixer/project-data.yml
           data-key: idaes
 
@@ -39,6 +33,8 @@ jobs:
       - name: Display matrix
         run: echo '${{ toJSON(matrix) }}' | jq
       - uses: actions/setup-python@v2
+      - name: Install ${{ matrix.pypi-name }}
+        run: pip install ${{ matrix.pypi-name }}
       - name: Run test command for ${{ matrix.repository }}
         run: ${{ matrix.test-command }}
 
@@ -57,5 +53,7 @@ jobs:
       - name: Display matrix
         run: echo '${{ toJSON(matrix) }}' | jq
       - uses: actions/setup-python@v2
+      - name: Install ${{ matrix.pypi-name }}
+        run: pip install ${{ matrix.pypi-name }}
       - name: Run test command for ${{ matrix.repository }}
         run: ${{ matrix.test-command }}
