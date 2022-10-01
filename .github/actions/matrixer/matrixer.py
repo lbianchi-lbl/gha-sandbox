@@ -6,7 +6,6 @@ from typing import (
 import sys
 
 import yaml
-from pydantic import BaseModel, Field
 
 
 class Matrix(TypedDict):
