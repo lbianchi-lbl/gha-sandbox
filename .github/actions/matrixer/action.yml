@@ -1,0 +1,42 @@
+name: matrixer
+description: Hijack the `strategy` field to assign arbitrary key-value pairs to the `matrix` context
+
+inputs:
+
+  data:
+    description: YAML string representing object-like data to be assigned; or path to a YAML file
+    required: false
+
+  # data-file:
+  #   descript
+  
+  data-key:
+    description: Key in the source mapping for the data object to assign
+    required: false
+    default: ""
+
+outputs:
+  
+  matrix:
+    description: JSON string for the `matrix` field
+    value: ${{ steps.generate.outputs.matrix }}
+  
+  strategy:
+    description: JSON string for the `strategy` field
+    value: ${{ steps.generate.outputs.strategy }}
+
+runs:
+  using: composite
+  steps:
+
+  - name: Set up python
+    uses: actions/setup-python@v2
+    with:
+      python-version: "3.10"
+
+  - name: Generate matrix
+    shell: bash {0}
+    id: generate
+    run: |
+      pip install --progress-bar off pyyaml
+      python process.py "${{ inputs.data }}" "${{ inputs.data-key }}"
