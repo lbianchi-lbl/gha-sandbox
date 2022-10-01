@@ -37,6 +37,8 @@ runs:
   - name: Generate matrix
     shell: bash {0}
     id: generate
+    env:
+      PYTHONPATH: ${{ github.action_path }}
     run: |
       pip install --progress-bar off pyyaml
-      python process.py "${{ inputs.data }}" "${{ inputs.data-key }}"
+      python -m matrixer "${{ inputs.data }}" "${{ inputs.data-key }}"
