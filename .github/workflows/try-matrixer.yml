@@ -1,0 +1,55 @@
+name: Try matrixer
+
+on:
+  push:
+    branches:
+      - try-matrixer
+
+jobs:
+
+  matrixer:
+    runs-on: ubuntu-latest
+
+    outputs:
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
+      strategy: ${{ steps.set-matrix.outputs.strategy }}
+    steps:
+
+      - uses: actions/checkout@v3
+      - uses: ./github/actions/matrixer
+        id: set-matrix
+        with:
+          data: |
+            foo: bar
+            baz: biz
+            test-command: |
+              pip install pytest
+              pytest
+
+  use-strategy:  
+    name: Using strategy ${{ matrix.foo }}
+    needs: [matrixer]
+    runs-on: ubuntu-latest
+
+    strategy: ${{ fromJSON(needs.matrixer.outputs.strategy) }}
+    steps:
+
+      - uses: actions/setup-python@v2
+      - name: Run test command for ${{ matrix.foo }}
+        run: ${{ matrix.test-command }}
+
+
+  use-matrix:
+    name: Using matrix ${{ matrix.foo }}
+    needs: [matrixer]
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: true
+      matrix: ${{ fromJSON(needs.matrixer.outputs.matrix) }}
+
+    steps:
+
+      - uses: actions/setup-python@v2
+      - name: Run test command for ${{ matrix.foo }}
+        run: ${{ matrix.test-command }}
