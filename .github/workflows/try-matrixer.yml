@@ -16,7 +16,7 @@ jobs:
     steps:
 
       - uses: actions/checkout@v3
-      - uses: ./github/actions/matrixer
+      - uses: ./.github/actions/matrixer
         id: set-matrix
         with:
           data: |
