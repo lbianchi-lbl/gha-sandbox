@@ -1,0 +1,7 @@
+repository: IDAES/idaes-pse
+pypi-name: idaes-pse
+test-command: |
+  idaes get-extensions --extra petsc --verbose
+  pip install pytest
+  wget https://raw.githubusercontent.com/IDAES/idaes-pse/main/pytest.ini
+  pytest --pyargs idaes -m "unit" -x

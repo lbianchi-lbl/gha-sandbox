@@ -1,0 +1,6 @@
+repository: watertap-org/watertap
+pypi-name: watertap
+test-command: |
+  idaes get-extensions --verbose
+  pip install pytest
+  pytest --pyargs watertap -x
