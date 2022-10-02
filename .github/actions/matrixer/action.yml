@@ -4,16 +4,17 @@ description: Hijack the `strategy` field to assign arbitrary key-value pairs to 
 inputs:
 
   data:
-    description: YAML string representing object-like data to be assigned; or path to a YAML file
-    required: false
+    description: |
+      YAML string containing data to be assigned.
 
-  # data-file:
-  #   descript
-  
-  data-key:
-    description: Key in the source mapping for the data object to assign
-    required: false
-    default: ""
+      It can contain multiple document stream (separated by ---), which will be merged
+      in the order they are defined (i.e. last one wins).
+
+      A document stream can consist of either:
+      - A literal mapping (key-value pairs)
+      - The string `!include ` followed by a path to a YAML file containing such a mapping,
+        in which case the content of the file will be loaded at the corresponding stream position
+    required: true
 
 outputs:
   
@@ -41,4 +42,4 @@ runs:
       PYTHONPATH: ${{ github.action_path }}
     run: |
       pip install --progress-bar off pyyaml
-      python -m matrixer "${{ inputs.data }}" "${{ inputs.data-key }}"
+      python -m matrixer "${{ inputs.data }}"

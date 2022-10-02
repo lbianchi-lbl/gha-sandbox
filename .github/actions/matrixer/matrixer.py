@@ -1,3 +1,4 @@
+from collections import ChainMap
 import json
 from pathlib import Path
 from typing import (
@@ -44,41 +45,39 @@ def set_output(name, data):
     print(f"::set-output name={name}::{out}")
 
 
-def get_data(spec: str) -> dict:
-    data = yaml.safe_load(str(spec))
-    if isinstance(data, str):
-        data = yaml.safe_load(Path(data).read_text())
-    assert isinstance(data, dict)
-    return data
+def construct_include(
+        loader: yaml.SafeLoader,
+        node: yaml.Node,
+        keypath_sep: str = ":",
+        keypath_metakey: str = "_key",
+    ):
+    content = loader.construct_scalar(node)
+    path, _, keypath = content.partition(keypath_sep)
+    path = Path(path)
+    path_data = yaml.safe_load(path.read_text())
+    if keypath:
+        path_data = {**{keypath_metakey: keypath}, **path_data[keypath]}
+    return path_data
 
 
-def main(source: str, pv=None, strategy=False):
+yaml.add_constructor("!include", construct_include, yaml.SafeLoader)
+
+
+def get_data(source: str) -> dict:
+    docs_data = list(yaml.safe_load_all(source))
+    data_updated_first_to_last = ChainMap(*docs_data[::-1])
+    return dict(data_updated_first_to_last)
+
+
+def main(source: str):
     data = get_data(source)
-
-    if pv:
-        data = {"_key": pv, **data[pv]}
-
     matrix = to_matrix(data)
     strategy = to_strategy(matrix)
 
     set_output("matrix", matrix)
     set_output("strategy", strategy)
-    # print(json.dumps(out_data, indent=4))
-
-
-def set_output(name, data):
-    out = json.dumps(data)
-    print(f"::set-output name={name}::{out}")
 
 
 if __name__ == '__main__':
     data = sys.argv[1]
-    try:
-        pv = sys.argv[2]
-    except IndexError:
-        pv = None
-    main(
-        data,
-        pv=pv,
-        strategy=True,
-    )
+    main(data)
