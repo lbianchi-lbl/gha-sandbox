@@ -22,9 +22,9 @@ jobs:
           data: |
             project-id: idaes
             ---
-            !include ${{ github.action_path }}/data/projects/idaes.yml
+            !include ./.github/actions/matrixer/data/projects/idaes.yml
             ---
-            !include ${{ github.action_path }}/data/releases/idaes.yml
+            !include ./.github/actions/matrixer/data/releases/idaes.yml
 
   use-strategy:  
     name: Using strategy for ${{ matrix.project-id }}
