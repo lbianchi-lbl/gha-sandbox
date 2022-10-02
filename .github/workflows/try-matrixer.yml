@@ -19,11 +19,15 @@ jobs:
       - uses: ./.github/actions/matrixer
         id: set-matrix
         with:
-          data: ./.github/actions/matrixer/project-data.yml
-          data-key: idaes
+          data: |
+            project-id: idaes
+            ---
+            !include ${{ github.action_path }}/data/projects/idaes.yml
+            ---
+            !include ${{ github.action_path }}/data/releases/idaes.yml
 
   use-strategy:  
-    name: Using strategy for ${{ matrix._key }}
+    name: Using strategy for ${{ matrix.project-id }}
     needs: [matrixer]
     runs-on: ubuntu-latest
 
@@ -34,13 +38,13 @@ jobs:
         run: echo '${{ toJSON(matrix) }}' | jq
       - uses: actions/setup-python@v2
       - name: Install ${{ matrix.pypi-name }}
-        run: pip install ${{ matrix.pypi-name }}
+        run: pip install "${{ matrix.pypi-name }}==${{ matrix.release }}"
       - name: Run test command for ${{ matrix.repository }}
         run: ${{ matrix.test-command }}
 
 
   use-matrix:
-    name: Using matrix for ${{ matrix._key }}
+    name: Using matrix for ${{ matrix.project-id }}
     needs: [matrixer]
     runs-on: ubuntu-latest
 
@@ -54,6 +58,6 @@ jobs:
         run: echo '${{ toJSON(matrix) }}' | jq
       - uses: actions/setup-python@v2
       - name: Install ${{ matrix.pypi-name }}
-        run: pip install ${{ matrix.pypi-name }}
+        run: pip install "${{ matrix.pypi-name }}==${{ matrix.release }}"
       - name: Run test command for ${{ matrix.repository }}
         run: ${{ matrix.test-command }}
