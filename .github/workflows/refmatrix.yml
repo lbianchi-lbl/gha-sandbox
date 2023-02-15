@@ -28,5 +28,6 @@ jobs:
         with:
           repository: ${{ inputs.repository }}
           ref: ${{ matrix.ref }}
+          fetch-depth: 0
       - name: Stand-in for the actual step(s) to run
         run: git log -n 1
