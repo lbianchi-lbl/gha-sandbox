@@ -6,4 +6,4 @@ jobs:
     uses: ./.github/workflows/refmatrix.yml
     with:
       repository: watertap-org/watertap
-      refs-json: '["1f49002", "85e1f52", "3382d91"]'
+      refs-json: '["main", "1f49002"]'
