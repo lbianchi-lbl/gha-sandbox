@@ -1,0 +1,9 @@
+on:
+  push:
+
+jobs:
+  ref-matrix:
+    uses: .github/workflows/refmatrix.yml
+    with:
+      repository: watertap-org/watertap
+      refs-json: '["1f4900256", "85e1f52", "3382d919"]'

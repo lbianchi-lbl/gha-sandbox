@@ -1,0 +1,32 @@
+name: Refmatrix
+
+on:
+  workflow_call:
+    inputs:
+      repository:
+        description: Repository to check out, in format <owner>/<name>
+        type: string
+        required: true
+      refs-json:
+        description: JSON string specifying list of Git refs to be used
+        type: string
+        required: true
+
+jobs:
+  main:
+    name: Main (ref=${{ matrix.ref }}, runner=${{ matrix.runner }})
+    runs-on: ${{ matrix.runner }}
+    strategy:
+      fail-fast: False
+      matrix:
+        ref: ${{ fromJSON(inputs.refs-json) }}
+        runner:
+          - ubuntu-latest
+          - windows-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          repository: ${{ inputs.repository }}
+          ref: ${{ matrix.ref }}
+      - name: Stand-in for the actual step(s) to run
+        run: git log -n 1
