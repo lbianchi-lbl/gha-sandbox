@@ -9,7 +9,7 @@ jobs:
       refs-json: |
         [
             "main",
-            "d988959",
-            "ac7b9f2",
-            "8e4ea3a"
+            "d988959737e121e800933c52c5913876f9c4e839",
+            "ac7b9f2bb8e6ec223e1ee925a9025beb3911e645",
+            "8e4ea3ad00f46b3103012ae7b57726ec3aa86d48"
         ]
