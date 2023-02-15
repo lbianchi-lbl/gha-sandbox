@@ -3,7 +3,7 @@ on:
 
 jobs:
   ref-matrix:
-    uses: .github/workflows/refmatrix.yml
+    uses: .github/workflows/refmatrix.yml@try-refmatrix
     with:
       repository: watertap-org/watertap
       refs-json: '["1f4900256", "85e1f52", "3382d919"]'
