@@ -14,7 +14,7 @@ on:
 
 jobs:
   main:
-    name: Main (ref=${{ matrix.ref }}, runner=${{ matrix.runner }})
+    name: ${{ matrix.repository }} (ref=${{ matrix.ref }}, runner=${{ matrix.runner }})
     runs-on: ${{ matrix.runner }}
     strategy:
       fail-fast: False
