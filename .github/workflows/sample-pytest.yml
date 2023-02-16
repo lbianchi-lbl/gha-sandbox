@@ -15,7 +15,7 @@ on:
         type: string
         required: true
       os:
-        description: OS alias to choose [linux, win64, macos]
+        description: OS key to map to valid GHA runner tag [linux, win64, macos]
         type: string
         required: true
       python-version:
@@ -35,7 +35,7 @@ env:
 jobs:
   pytest:
     name: pytest/${{ inputs.os }}/${{ inputs.os }}/py${{ inputs.python-version }}
-    runs-on: ${{ fromJSON(vars.os_mapping_json)[inputs.os] }}
+    runs-on: ${{ fromJSON(vars.map_os_runner_json)[inputs.os] || inputs.os }}
     steps:
       - uses: actions/setup-python@v4
         with:
