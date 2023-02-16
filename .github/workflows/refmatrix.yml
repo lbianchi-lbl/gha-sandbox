@@ -10,7 +10,8 @@ on:
       refs-json:
         description: JSON string specifying list of Git refs to be used
         type: string
-        required: true
+        default: ''
+        required: false
 
 jobs:
   main:
@@ -20,9 +21,7 @@ jobs:
       fail-fast: False
       matrix:
         ref: ${{ fromJSON(inputs.refs-json) }}
-        runner:
-          - ubuntu-latest
-          - windows-latest
+        runner: ${{ fromJSON(vars.runners || '["ubuntu-latest"]') }}
     steps:
       - uses: actions/checkout@v3
         with:
