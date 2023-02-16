@@ -15,7 +15,7 @@ jobs:
       - uses: actions/setup-python@v4
         with:
           python-version: '3.11'
-      - shell: python -c {0} "6 days ago"
+      - shell: python {0} "6 days ago"
         id: find-git-refs
         run: |
           import json
