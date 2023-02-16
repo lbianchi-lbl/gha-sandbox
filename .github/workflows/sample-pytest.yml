@@ -34,7 +34,7 @@ env:
 
 jobs:
   pytest:
-    name: pytest/${{ inputs.os }}/${{ inputs.os }}/py${{ inputs.python-version }}
+    name: pytest/${{ inputs.os }}/py${{ inputs.python-version }}/${{ inputs.install-variant }}
     runs-on: ${{ fromJSON(vars.map_os_runner_json)[inputs.os] || inputs.os }}
     steps:
       - uses: actions/setup-python@v4
