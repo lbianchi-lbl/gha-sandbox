@@ -1,0 +1,47 @@
+on:
+  workflow_call:
+    inputs:
+      repository:
+        description: Repository to check out, in format <owner>/<name>
+        type: string
+        required: true
+      ref:
+        description: Git ref to use for installation
+        type: string
+        required: false
+        default: main
+      python-distr-name:
+        description: Name of the Python distribution (i.e. PyPI name)
+        type: string
+        required: true
+      os:
+        description: OS alias to choose [linux, win64, macos]
+        type: string
+        required: true
+      python-version:
+        description: Python version
+        type: string
+        required: true
+      install-variant:
+        description: Under which variant the software should be installed
+        type: string
+        required: false
+        default: dev
+
+env:
+  PIP_PROGRESS_BAR: "off"
+  PYTEST_ADDOPTS: color=yes
+
+jobs:
+  pytest:
+    name: pytest/${{ inputs.os }}/${{ inputs.os }}/py${{ inputs.python-version }}
+    runs-on: ${{ fromJSON(vars.os_mapping_json)[inputs.os] }}
+    steps:
+      - uses: actions/setup-python@v4
+        with:
+          python-version: ${{ inputs.python-version }}
+      - name: Install ${{ inputs.repository }} using pip
+        env:
+          install_target: ${{ inputs.python-distr-name }} @ https://github.com/${{ inputs.repository }}/archive/${{ inputs.ref }}.zip
+        run: |
+          pip install "$install_target"

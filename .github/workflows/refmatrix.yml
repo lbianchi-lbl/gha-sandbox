@@ -14,7 +14,8 @@ on:
         required: false
 
 jobs:
-  main:
+
+  trial:
     name: ${{ inputs.repository }} (ref=${{ matrix.ref }}, runner=${{ matrix.runner }})
     runs-on: ${{ matrix.runner }}
     strategy:
@@ -30,3 +31,18 @@ jobs:
           fetch-depth: 0
       - name: Stand-in for the actual step(s) to run
         run: git log -n 1
+
+  sample-pytest:
+    uses: ./.workflows/sample-pytest.yml
+    strategy:
+      fail-fast: False
+      matrix:
+        ref: ${{ fromJSON(inputs.refs-json) }}
+        os: [linux, win64, macos]
+        py: ['3.7', '3.10']
+    with:
+      repository: ${{ inputs.repository }}
+      python-distr-name: watertap
+      ref: ${{ matrix.ref }}
+      os: ${{ matrix.os }}
+      python-version: ${{ matrix.py }}
