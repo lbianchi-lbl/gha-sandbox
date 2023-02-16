@@ -63,20 +63,19 @@ jobs:
       - name: Install ${{ inputs.repository }} using pip
         run: |
           pip install "$install_target"
-          idaes_info=$(idaes environment-info)
-          cat <<'EOF' > $GITHUB_STEP_SUMMARY
-          ## Installation
 
-          ```sh
-          pip install "$install_target"
-          ```
-          ---
+          echo "## Installation" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "```sh" >> $GITHUB_STEP_SUMMARY
+          echo "pip install $install_target" >> $GITHUB_STEP_SUMMARY
+          echo "```" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "---" >> $GITHUB_STEP_SUMMARY
 
-          ## `idaes environment-info`
-
-          ```txt
-          $idaes_info
-          ```
-          ---
-
-          EOF
+          echo '## `idaes environment-info`' >> $GITHUB_STEP_SUMMARY
+          echo '' >> $GITHUB_STEP_SUMMARY
+          echo '```txt' >> $GITHUB_STEP_SUMMARY
+          idaes environment-info >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "---" >> $GITHUB_STEP_SUMMARY
