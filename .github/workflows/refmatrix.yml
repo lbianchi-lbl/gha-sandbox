@@ -21,7 +21,7 @@ jobs:
       fail-fast: False
       matrix:
         ref: ${{ fromJSON(inputs.refs-json) }}
-        runner: ${{ fromJSON(vars.runners || '["ubuntu-latest"]') }}
+        runner: ${{ fromJSON(vars.runners_json || '["ubuntu-latest"]') }}
     steps:
       - uses: actions/checkout@v3
         with:
