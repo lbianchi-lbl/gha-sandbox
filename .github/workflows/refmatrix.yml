@@ -33,7 +33,7 @@ jobs:
         run: git log -n 1
 
   sample-pytest:
-    uses: ./.workflows/sample-pytest.yml
+    uses: ./.github/workflows/sample-pytest.yml
     strategy:
       fail-fast: False
       matrix:
