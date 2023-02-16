@@ -6,7 +6,7 @@ jobs:
   set-refs:
     runs-on: ubuntu-latest
     outputs:
-      git-refs: ${{ steps.find-git-refs.output.git-refs }}
+      git-refs: ${{ steps.find-git-refs.outputs.git-refs }}
     steps:
       - uses: actions/checkout@v3
         with:
