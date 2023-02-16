@@ -28,6 +28,11 @@ on:
         required: false
         default: dev
 
+defaults:
+  run:
+    shell: bash -l {0}
+
+
 env:
   PIP_PROGRESS_BAR: "off"
   PYTEST_ADDOPTS: color=yes
