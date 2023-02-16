@@ -30,7 +30,7 @@ on:
 
 defaults:
   run:
-    shell: bash -l {0}
+    shell: bash {0}
 
 
 env:
@@ -41,12 +41,26 @@ jobs:
   pytest:
     name: pytest/${{ inputs.os }}/py${{ inputs.python-version }}/${{ inputs.install-variant }}
     runs-on: ${{ fromJSON(vars.map_os_runner_json)[inputs.os] || inputs.os }}
+    env:
+      install_target: ${{ inputs.python-distr-name }} @ https://github.com/${{ inputs.repository }}/archive/${{ inputs.ref }}.zip
     steps:
+      - name: Save inputs in job summary
+        run: |
+          cat <<'EOF' > $GITHUB_STEP_SUMMARY
+          # This is a status update
+
+          ## Inputs
+
+          ```json
+          ${{ toJSON(inputs) }}
+          ```
+          ---
+
+          EOF
       - uses: actions/setup-python@v4
         with:
           python-version: ${{ inputs.python-version }}
       - name: Install ${{ inputs.repository }} using pip
-        env:
-          install_target: ${{ inputs.python-distr-name }} @ https://github.com/${{ inputs.repository }}/archive/${{ inputs.ref }}.zip
         run: |
           pip install "$install_target"
+          echo "pip install $install_target" >> $GITHUB_STEP_SUMMARY
