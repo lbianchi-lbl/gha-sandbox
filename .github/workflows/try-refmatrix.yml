@@ -2,14 +2,54 @@ on:
   push:
 
 jobs:
+
+  set-refs:
+    runs-on: ubuntu-latest
+    outputs:
+      git-refs: ${{ steps.find-git-refs.output.git-refs }}
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          repository: watertap-org/watertap
+          fetch-depth: 0
+      - uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+      - shell: python -c {0} "6 days ago"
+        id: find-git-refs
+        run: |
+          import json
+          import os
+          from pathlib import Path
+          from subprocess import check_output
+          import sys
+
+          def _set_output(name: str, value: str) -> None:
+              with Path(os.environ["GITHUB_OUTPUT"]).open("at") as outf:
+                  outf.write(f"{name}={value}")
+
+          def _get_git_commits(start: str, fmt="%H") -> list[str]:
+              args = [
+                   "git", "log",
+                   "--since", str(start),
+                   f"--format={fmt}", 
+              ]
+              out = check_output(args, text=True).strip()
+              return out.splitlines()
+          git_log_start = sys.argv[1]
+          commits = _get_git_commits(git_log_start)
+          _set_output("git-refs", json.dumps(commits))
+
   ref-matrix:
+    needs: [set-refs]
     uses: ./.github/workflows/refmatrix.yml
     with:
       repository: watertap-org/watertap
-      refs-json: |
-        [
-            "main",
-            "d988959737e121e800933c52c5913876f9c4e839",
-            "ac7b9f2bb8e6ec223e1ee925a9025beb3911e645",
-            "8e4ea3ad00f46b3103012ae7b57726ec3aa86d48"
-        ]
+      refs-json: ${{ needs.set-refs.outputs.git-refs }}
+      # refs-json: |
+      #   [
+      #       "main",
+      #       "d988959737e121e800933c52c5913876f9c4e839",
+      #       "ac7b9f2bb8e6ec223e1ee925a9025beb3911e645",
+      #       "8e4ea3ad00f46b3103012ae7b57726ec3aa86d48"
+      #   ]
