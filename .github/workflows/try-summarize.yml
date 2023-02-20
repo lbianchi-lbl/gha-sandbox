@@ -1,0 +1,19 @@
+name: Try summarize action
+
+on:
+  push:
+    branches:
+      - '*summarize*'
+
+jobs:
+  main:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: ./.github/actions/summarize
+        with:
+          header: '## Contents of `vars` context'
+          json: ${{ toJSON(vars) }}
+      - uses: ./.github/actions/summarize
+        with:
+          header: '## System info'
+          command: cat /etc/os-release

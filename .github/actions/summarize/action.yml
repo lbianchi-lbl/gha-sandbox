@@ -1,0 +1,50 @@
+name: Summarize
+description: Convenience wrapper to render different snippets of data to GITHUB_STEP_SUMMARY
+
+inputs:
+  header:
+    description: Header to display before content
+    required: false
+    default: ""
+  separator:
+    description: Separator to add after content
+    required: false
+    default: ---
+  json:
+    description: JSON string, to be rendered in a `json` syntax block
+    required: false
+    default: ''
+  command:
+    description: Run command and display output in a `log` syntax block
+    default: ""
+    required: false
+
+
+runs:
+  using: composite
+  steps:
+    - shell: bash {0}
+      run: |
+        echo '${{ inputs.header }}' >> $GITHUB_STEP_SUMMARY
+        echo '' >> $GITHUB_STEP_SUMMARY
+    - shell: bash {0}
+      if: inputs.json
+      run: |
+        cat <<'EOF' >> $GITHUB_STEP_SUMMARY
+
+        ```json
+        ${{ inputs.json }}
+        ```
+
+        EOF
+    - shell: bash {0}
+      if: inputs.command
+      run: |
+        output=$(${{ inputs.command }})
+        echo '' >> $GITHUB_STEP_SUMMARY
+        echo 'Output of `${{ inputs.command}}`:' >> $GITHUB_STEP_SUMMARY
+        echo ''
+        echo '```log' >> $GITHUB_STEP_SUMMARY
+        echo "$cmd_output" >> $GITHUB_STEP_SUMMARY
+        echo '```' >> $GITHUB_STEP_SUMMARY
+        echo '' >> $GITHUB_STEP_SUMMARY
