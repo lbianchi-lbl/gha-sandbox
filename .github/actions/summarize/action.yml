@@ -40,7 +40,7 @@ runs:
     - shell: bash {0}
       if: inputs.command
       run: |
-        output=$(${{ inputs.command }})
+        cmd_output=$(${{ inputs.command }})
         echo '' >> $GITHUB_STEP_SUMMARY
         echo 'Output of `${{ inputs.command}}`:' >> $GITHUB_STEP_SUMMARY
         echo ''
