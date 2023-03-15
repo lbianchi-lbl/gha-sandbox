@@ -1,0 +1,9 @@
+on:
+  push:
+
+jobs:
+  run-checks:
+    uses: ./.github/workflows/check-data-package.yml
+    with:
+      repository: gmlc-dispatches/rts-gmlc-data
+      ref: ef7cfd8393efc787fab53fd08c8a85eb45eb9401
