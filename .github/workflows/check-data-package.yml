@@ -50,7 +50,7 @@ jobs:
           max_size_mb: ${{ inputs.pypi-max-file-size-mb }}
         run: |
           import os
-          from pathlib import path
+          from pathlib import Path
 
           ONE_MB = 1024 * 1024
           MAX_BYTES = int(os.environ["max_size_mb"]) * ONE_MB
@@ -65,4 +65,4 @@ jobs:
               for p in file_paths
           }
           if not all(size < MAX_BYTES for size in size_by_file.values()):
-              raise ValueError(f"One or more files exceed size limit: {size_by_file}")
+              raise ValueError(f"One or more files exceed size limit ({MAX_BYTES}): {size_by_file}")
