@@ -57,7 +57,7 @@ jobs:
           dir_to_check = Path(os.environ["dir_to_check"]).resolve()
 
           file_paths = sorted(
-              p for p in dir_to_check.glob("*"))
+              p for p in dir_to_check.glob("*")
               if p.is_file()
           )
           size_by_file = {
