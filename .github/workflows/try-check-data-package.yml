@@ -7,3 +7,4 @@ jobs:
     with:
       repository: gmlc-dispatches/rts-gmlc-data
       ref: ef7cfd8393efc787fab53fd08c8a85eb45eb9401
+      pypi-max-file-size-mb: '1'
